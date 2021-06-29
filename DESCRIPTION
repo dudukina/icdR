@@ -1,5 +1,5 @@
 Package: icdR
-Title: Provides an R-friendly way of working with the Danish SKS browsericdR
+Title: Provides an R-friendly way of working with the Danish SKS browser
 Version: 0.0.0.9000
 Authors@R: 
     person(given = "Elena",
