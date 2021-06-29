@@ -19,3 +19,5 @@ Imports:
     readr,
     stringr,
     tidyr
+URL: https://github.com/evpatora/icdR
+BugReports: https://github.com/evpatora/icdR/issues
