@@ -117,3 +117,81 @@ read_atc <- function(atc_link = "https://medstat.dk/da/download/file/YXRjX2NvZGV
   atc <- readr::read_delim(atc_link, delim = ";", locale = readr::locale("en")) %>%
     dplyr::select(ATC = 1, drug = 2, unit = 4)
 }
+
+
+#' Find relevant icd-8 codes
+#'
+#' Finds specific icd-8 codes provided as regex
+#'
+#' @name find_icd8
+#' @param regex is the regex of icd-8 codes
+#' @param icd_8 is the data with icd-8 codes
+#' @param icd_8_code is the column (variable) with icd-8 codes
+#'
+#' @importFrom magrittr %>%
+#' @importFrom magrittr %<>%
+#' @importFrom stringr str_detect
+#' @importFrom dplyr filter
+#'
+#' @return the dataframe with icd-8 codes
+#' @export
+#' @examples
+#' find_icd8(regex = "^249")
+find_icd8 <- function(icd_8 = icd_8, icd_8_code = icd_8_code, regex, negate = FALSE){
+  codes <- icd_8 %>%
+    dplyr::filter(
+      stringr::str_detect(string = {{icd_8_code}}, regex, negate = negate) & str_length(icd_8_code) > 4
+    )
+}
+
+
+#' Find relevant icd-10 codes
+#'
+#' Finds specific icd-10 codes provided as regex
+#'
+#' @name find_icd10
+#' @param regex is the regex of icd-10 codes
+#' @param icd_10 is the data with icd-10 codes
+#' @param icd_10_code is the column (variable) with icd-10 codes
+#'
+#' @importFrom magrittr %>%
+#' @importFrom magrittr %<>%
+#' @importFrom stringr str_detect
+#' @importFrom dplyr filter
+#'
+#' @return the dataframe with icd-8 codes
+#' @export
+#' @examples
+#' find_icd10(regex = "^DE10|^DE11|^DH360")
+find_icd10 <- function(icd_10 = icd_10, icd_10_code = icd_10_code, regex, negate = FALSE){
+  codes <- icd_10 %>%
+    dplyr::filter(
+      stringr::str_detect(string = {{icd_10_code}}, regex, negate = negate)
+    )
+}
+
+
+#' Find any relevant icd-8 or icd-10 codes
+#'
+#' Finds specific icd codes provided as regex
+#'
+#' @name find_icd
+#' @param regex is the regex of icd codes
+#' @param icd is the data with icd codes
+#' @param icd_code is the column (variable) with icd codes
+#'
+#' @importFrom magrittr %>%
+#' @importFrom magrittr %<>%
+#' @importFrom stringr str_detect
+#' @importFrom dplyr filter
+#'
+#' @return the dataframe with icd-8 codes
+#' @export
+#' @examples
+#' find_icd(regex = "^DE10|^DE11|^DH360|^249|^250")
+find_icd <- function(icd_data = icd_10, icd_code = icd_code, regex, negate = FALSE){
+  codes <- icd_data %>%
+    dplyr::filter(
+      stringr::str_detect(string = {{icd_code}}, regex, negate = negate)
+    )
+}
