@@ -18,14 +18,17 @@ read_icd8 <- function(sks_link = "ftp://filer.sst.dk/filer/sks/data/skscomplete/
 
   icd_8_sks <- readr::read_table(sks_link, col_names = FALSE, locale = readr::locale(encoding = "latin1"))
 
-  icd_8_sks %<>% dplyr::mutate(
-    X1 = stringr::str_extract(X1, pattern = "[0-9]+"),
-    X2_1 = stringr::str_extract(X2, pattern = "[0-9]+"),
-    X2_2 = stringr::str_sub(X2, start = 25, end = length(icd_8_sks$X2)),
-    X2_1_1 = lubridate::ymd(stringr::str_sub(X2_1, 1, 8)),
-    X2_1_2 = lubridate::ymd(stringr::str_sub(X2_1, 9, 16)),
-    X2_1_3 = lubridate::ymd(stringr::str_sub(X2_1, 17, 26))
-  ) %>%
+  icd_8_sks %<>%
+    mutate(across(.cols = X2:X6, ~case_when(is.na(.x) ~ "", T ~ .x))) %>%
+    tidyr::unite(., col = "X2", "X2":"X6", sep = " ") %>%
+    dplyr::mutate(
+      X1 = stringr::str_extract(X1, pattern = "[0-9]+"),
+      X2_1 = stringr::str_extract(X2, pattern = "[0-9]+"),
+      X2_2 = stringr::str_sub(X2, start = 25, end = length(icd_8_sks$X2)),
+      X2_1_1 = lubridate::ymd(stringr::str_sub(X2_1, 1, 8)),
+      X2_1_2 = lubridate::ymd(stringr::str_sub(X2_1, 9, 16)),
+      X2_1_3 = lubridate::ymd(stringr::str_sub(X2_1, 17, 26))
+    )  %>%
     dplyr::select(X1, X2_2, X2_1_1, X2_1_2, X2_1_3) %>%
     dplyr::rename(icd_8_code = X1, diagnosis = X2_2, date_start = X2_1_1, date_change = X2_1_2, date_finish = X2_1_3)
 
@@ -48,16 +51,19 @@ read_icd8 <- function(sks_link = "ftp://filer.sst.dk/filer/sks/data/skscomplete/
 read_icd10 <- function(sks_link = "ftp://filer.sst.dk/filer/sks/data/skscomplete/SKScomplete.txt"){
   icd_10_sks <- readr::read_table(sks_link, col_names = FALSE, locale = readr::locale(encoding = "latin1"))
 
-icd_10_sks %<>% dplyr::mutate(
-  X1 = stringr::str_sub(X1, start = 4, end = length(icd_10_sks$X1)),
-  X2_1 = stringr::str_extract(X2, pattern = "[0-9]+"),
-  X2_2 = stringr::str_sub(X2, start = 25, end = length(icd_10_sks$X2)),
-  X2_1_1 = lubridate::ymd(stringr::str_sub(X2_1, 1, 8)),
-  X2_1_2 = lubridate::ymd(stringr::str_sub(X2_1, 9, 16)),
-  X2_1_3 = lubridate::ymd(stringr::str_sub(X2_1, 17, 26))
-) %>%
-  dplyr::select(X1, X2_2, X2_1_1, X2_1_2, X2_1_3, X4) %>%
-  dplyr::rename(icd_10_code = X1, diagnosis = X2_2, date_start = X2_1_1, date_change = X2_1_2, date_finish = X2_1_3, sks_version = X4)
+  icd_10_sks %<>%
+    mutate(across(.cols = X2:X6, ~case_when(is.na(.x) ~ "", T ~ .x))) %>%
+    tidyr::unite(., col = "X2", "X2":"X6", sep = " ") %>%
+    dplyr::mutate(
+      X1 = stringr::str_sub(X1, start = 4, end = length(icd_10_sks$X1)),
+      X2_1 = stringr::str_extract(X2, pattern = "[0-9]+"),
+      X2_2 = stringr::str_sub(X2, start = 25, end = length(icd_10_sks$X2)),
+      X2_1_1 = lubridate::ymd(stringr::str_sub(X2_1, 1, 8)),
+      X2_1_2 = lubridate::ymd(stringr::str_sub(X2_1, 9, 16)),
+      X2_1_3 = lubridate::ymd(stringr::str_sub(X2_1, 17, 26))
+    ) %>%
+    dplyr::select(X1, X2_2, X2_1_1, X2_1_2, X2_1_3) %>%
+    dplyr::rename(icd_10_code = X1, diagnosis = X2_2, date_start = X2_1_1, date_change = X2_1_2, date_finish = X2_1_3)
 }
 
 #' Reads procedure/operations codes
@@ -76,20 +82,21 @@ icd_10_sks %<>% dplyr::mutate(
 #' opr <- read_opr()
 read_opr <- function(sks_link = "ftp://filer.sst.dk/filer/sks/data/skscomplete/OPRklass_1995.txt"){
 
-opr <- readr::read_table(sks_link, col_names = FALSE, locale = readr::locale(encoding = "latin1"))
+  opr <- readr::read_table(sks_link, col_names = FALSE, locale = readr::locale(encoding = "latin1"))
 
-opr %<>%
-  dplyr::select(-c(3, 4)) %>%
-  dplyr::mutate(
-  X1 = stringr::str_sub(X1, start = 4, end = length(opr$X1)),
-  X2_1 = stringr::str_extract(X2, pattern = "[0-9]+"),
-  X2_2 = stringr::str_sub(X2, start = 25, end = length(opr$X2)),
-  X2_1_1 = lubridate::ymd(stringr::str_sub(X2_1, 1, 8)),
-  X2_1_2 = lubridate::ymd(stringr::str_sub(X2_1, 9, 16)),
-  X2_1_3 = lubridate::ymd(stringr::str_sub(X2_1, 17, 26))
-) %>%
-  dplyr::select(X1, X2_2, X2_1_1, X2_1_2, X2_1_3) %>%
-  dplyr::rename(opr_code_1995 = X1, operation = X2_2, date_start = X2_1_1, date_change = X2_1_2, date_finish = X2_1_3)
+  opr %<>%
+    mutate(across(.cols = X2:X6, ~case_when(is.na(.x) ~ "", T ~ .x))) %>%
+    tidyr::unite(., col = "X2", "X2":"X6", sep = " ") %>%
+    dplyr::mutate(
+      X1 = stringr::str_sub(X1, start = 4, end = length(opr$X1)),
+      X2_1 = stringr::str_extract(X2, pattern = "[0-9]+"),
+      X2_2 = stringr::str_sub(X2, start = 25, end = length(opr$X2)),
+      X2_1_1 = lubridate::ymd(stringr::str_sub(X2_1, 1, 8)),
+      X2_1_2 = lubridate::ymd(stringr::str_sub(X2_1, 9, 16)),
+      X2_1_3 = lubridate::ymd(stringr::str_sub(X2_1, 17, 26))
+    ) %>%
+    dplyr::select(X1, X2_2, X2_1_1, X2_1_2, X2_1_3) %>%
+    dplyr::rename(opr_code_1995 = X1, operation = X2_2, date_start = X2_1_1, date_change = X2_1_2, date_finish = X2_1_3)
 }
 
 #' Reads the Anatomical Therapeutic Chemical (ATC) Classification codes
@@ -106,7 +113,7 @@ opr %<>%
 #' @export
 #' @examples
 #' atc <- read_atc()
-read_atc <- function(atc_link = "https://medstat.dk/da/download/file/YXRjX2dyb3Vwcy50eHQ="){
+read_atc <- function(atc_link = "https://medstat.dk/da/download/file/YXRjX2NvZGVfdGV4dC50eHQ="){
   atc <- readr::read_delim(atc_link, delim = ";", locale = readr::locale("en")) %>%
     dplyr::select(ATC = 1, drug = 2, unit = 4)
 }

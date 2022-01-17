@@ -4,7 +4,9 @@
 \alias{read_atc}
 \title{Reads the Anatomical Therapeutic Chemical (ATC) Classification codes}
 \usage{
-read_atc(atc_link = "https://medstat.dk/da/download/file/YXRjX2dyb3Vwcy50eHQ=")
+read_atc(
+  atc_link = "https://medstat.dk/da/download/file/YXRjX2NvZGVfdGV4dC50eHQ="
+)
 }
 \arguments{
 \item{atc_link}{is the link to medstat.dk}
