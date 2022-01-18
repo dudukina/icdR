@@ -4,12 +4,22 @@
 \alias{find_icd}
 \title{Find any relevant icd-8 or icd-10 codes}
 \usage{
-find_icd(icd_data = icd_10, icd_code = icd_code, regex, negate = FALSE)
+find_icd(
+  icd_data = icd_data,
+  icd_code = icd_code,
+  regex = NULL,
+  negate = FALSE,
+  is_icd_8_code = FALSE,
+  regex_icd_8 = NULL,
+  regex_icd_10 = NULL
+)
 }
 \arguments{
 \item{icd_code}{is the column (variable) with icd codes}
 
 \item{regex}{is the regex of icd codes}
+
+\item{is_icd_8_code}{is the indicator of whether the code is icd-8 code}
 
 \item{icd}{is the data with icd codes}
 }

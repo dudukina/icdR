@@ -179,6 +179,7 @@ find_icd10 <- function(icd_10 = icd_10, icd_10_code = icd_10_code, regex, negate
 #' @param regex is the regex of icd codes
 #' @param icd is the data with icd codes
 #' @param icd_code is the column (variable) with icd codes
+#' @param is_icd_8_code is the indicator of whether the code is icd-8 code
 #'
 #' @importFrom magrittr %>%
 #' @importFrom magrittr %<>%
@@ -189,9 +190,23 @@ find_icd10 <- function(icd_10 = icd_10, icd_10_code = icd_10_code, regex, negate
 #' @export
 #' @examples
 #' find_icd(regex = "^DE10|^DE11|^DH360|^249|^250")
-find_icd <- function(icd_data = icd_10, icd_code = icd_code, regex, negate = FALSE){
-  codes <- icd_data %>%
+find_icd <- function(icd_data = icd_data, icd_code = icd_code, regex = NULL, negate = FALSE, is_icd_8_code = FALSE,
+                     regex_icd_8 = NULL, regex_icd_10 = NULL){
+  if (is_icd_8_code == FALSE && is.null(regex_icd_8) && is.null(regex_icd_10)) {
+    codes <- icd_data %>%
     dplyr::filter(
       stringr::str_detect(string = {{icd_code}}, regex, negate = negate)
-    )
+    )} else {
+      codes_8 <- icd_data %>%
+        dplyr::filter(
+          stringr::str_detect(string = {{icd_code}}, regex_icd_8, negate = negate) & str_length(icd_code) > 4
+        )
+
+      codes_10 <- icd_data %>%
+        dplyr::filter(
+          stringr::str_detect(string = {{icd_code}}, regex_icd_10, negate = negate)
+        )
+
+      codes <- codes_8 %>% full_join(codes_10)
+    }
 }
