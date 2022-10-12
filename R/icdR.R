@@ -14,7 +14,7 @@ utils::globalVariables(c("X1", "X2", "X2_1", "X2_2", "X2_1_1", "X2_1_1", "X2_1_2
 #' @export
 #' @examples
 #' icd8 <- read_icd8()
-read_icd8 <- function(sks_link = "ftp://filer.sst.dk/filer/sks/data/skscomplete/SGDklass_ICD8.txt"){
+read_icd8 <- function(sks_link = "https://filer.sundhedsdata.dk/sks/data/skscomplete/SGDklass_ICD8.txt"){
 
   icd_8_sks <- readr::read_table(sks_link, col_names = FALSE, locale = readr::locale(encoding = "latin1"))
 
@@ -48,7 +48,7 @@ read_icd8 <- function(sks_link = "ftp://filer.sst.dk/filer/sks/data/skscomplete/
 #' @export
 #' @examples
 #' icd10 <- read_icd10()
-read_icd10 <- function(sks_link = "ftp://filer.sst.dk/filer/sks/data/skscomplete/SKScomplete.txt"){
+read_icd10 <- function(sks_link = "https://filer.sundhedsdata.dk/sks/data/skscomplete/SKScomplete.txt"){
   icd_10_sks <- readr::read_table(sks_link, col_names = FALSE, locale = readr::locale(encoding = "latin1"))
 
   icd_10_sks %<>%
