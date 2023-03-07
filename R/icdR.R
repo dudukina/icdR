@@ -80,7 +80,7 @@ read_icd10 <- function(sks_link = "https://filer.sundhedsdata.dk/sks/data/skscom
 #' @export
 #' @examples
 #' opr <- read_opr()
-read_opr <- function(sks_link = "ftp://filer.sst.dk/filer/sks/data/skscomplete/OPRklass_1995.txt"){
+read_opr <- function(sks_link = "https://filer.sundhedsdata.dk/sks/data/skscomplete/OPRklass_1995.txt"){
 
   opr <- readr::read_table(sks_link, col_names = FALSE, locale = readr::locale(encoding = "latin1"))
 
