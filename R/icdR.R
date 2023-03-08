@@ -115,7 +115,9 @@ read_opr <- function(sks_link = "https://filer.sundhedsdata.dk/sks/data/skscompl
 #' atc <- read_atc()
 read_atc <- function(atc_link = "https://medstat.dk/da/download/file/YXRjX2NvZGVfdGV4dC50eHQ="){
   atc <- readr::read_delim(atc_link, delim = ";", locale = locale=locale(encoding="latin1")) %>%
-    dplyr::select(ATC = 1, drug = 2, unit = 4)
+    dplyr::select(ATC = 1, drug = 2, unit = 4, lang = 5) %>% 
+    filter(lang == 1) %>%
+    select(-lang)
 }
 
 
